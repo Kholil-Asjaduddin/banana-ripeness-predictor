@@ -1,0 +1,105 @@
+# ========================
+# GLOBAL
+# ========================
+# Mac & system files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.*
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# PyCharm / VSCode / IDE
+.idea/
+.vscode/
+*.sw?
+
+# Dependency directories
+node_modules/
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environment
+venv/
+.env/
+.venv/
+pip-wheel-metadata/
+
+# Coverage reports
+coverage/
+htmlcov/
+*.cover
+*.py,cover
+.cache
+nosetests.xml
+coverage.xml
+*.lcov
+*.egg-info/
+
+# ========================
+# BACKEND (Python - FastAPI, Django, Flask)
+# ========================
+# Byte-compiled / optimized / DLL files
+*.pyo
+*.pyd
+*.pdb
+
+# Test cache
+.pytest_cache/
+
+# SQLite DBs or temp data
+*.db
+*.sqlite3
+instance/
+db.sqlite3
+
+# ========================
+# FRONTEND (React/Vue/Next/etc.)
+# ========================
+# Build output
+dist/
+build/
+out/
+.next/
+.nuxt/
+.svelte-kit/
+
+# Generated files
+*.tsbuildinfo
+
+# ========================
+# QA TESTING
+# ========================
+# Playwright/End-to-End test results
+playwright-report/
+test-results/
+allure-results/
+
+# Postman
+newman/
+
+# ========================
+# DOCKER
+# ========================
+*.pid
+*.seed
+*.pid.lock
+docker-compose.override.yml
+
+# ========================
+# MISC
+# ========================
+*.bak
+*.tmp
+*.swp
+*.orig
+
+# Service account keys
+serviceAccountKey.json
