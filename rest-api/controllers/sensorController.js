@@ -1,3 +1,5 @@
+const { DateTime } = require('luxon');
+
 module.exports = (db) => {
   const saveSensorData = async (req, res) => {
     try {
@@ -7,12 +9,14 @@ module.exports = (db) => {
         return res.status(400).json({ error: 'Missing required sensor fields' });
       }
 
+      const jakartaTime = timestamp || DateTime.now().setZone('Asia/Jakarta').toISO();
+
       await db.collection('sensor_readings').add({
         r: Number(r),
         g: Number(g),
         b: Number(b),
         tvoc: Number(tvoc),
-        timestamp: timestamp || new Date().toISOString(),
+        timestamp: jakartaTime,
         ripeness: "unlabeled",
         nextPhase: -1
       });
