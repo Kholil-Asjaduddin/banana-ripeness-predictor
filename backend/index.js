@@ -1,17 +1,10 @@
-const express = require('express');
-const cors = require('cors');
 const dotenv = require('dotenv');
-const admin = require('firebase-admin');
-
 dotenv.config();
 
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+const express = require('express');
+const cors = require('cors');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-
-const db = admin.firestore();
+const { db } = require('./middleware/firebase');
 
 const app = express();
 app.use(cors());
