@@ -3,9 +3,9 @@ const { DateTime } = require('luxon');
 module.exports = (db) => {
   const saveSensorData = async (req, res) => {
     try {
-      const { r, g, b, tvoc, timestamp } = req.body;
+      const { r, g, b, tvoc, co2, timestamp } = req.body;
 
-      if ([r, g, b, tvoc].some(val => val === undefined)) {
+      if ([r, g, b, tvoc, co2].some(val => val === undefined)) {
         return res.status(400).json({ error: 'Missing required sensor fields' });
       }
 
@@ -16,6 +16,7 @@ module.exports = (db) => {
         g: Number(g),
         b: Number(b),
         tvoc: Number(tvoc),
+        co2: Number(co2),
         timestamp: jakartaTime,
         ripeness: "unlabeled",
         nextPhase: -1
