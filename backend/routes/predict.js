@@ -2,9 +2,10 @@ const express = require('express');
 
 module.exports = () => {
   const router = express.Router();
-  const { startPrediction } = require('../controllers/predictController')();
+  const { startPredict, stopPredict } = require('../controllers/predictController')();
 
-  router.post('/start', startPrediction);
+  router.post('/start', startPredict);
+  router.post('/stop', stopPredict);
 
   return router;
 };
