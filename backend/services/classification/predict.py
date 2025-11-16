@@ -6,22 +6,29 @@ from catboost import CatBoostClassifier
 
 EPS = 1e-6
 feature_cols = [
-  'R', 'G', 'B', 'brightness', 'r_chroma', 'g_chroma', 'b_chroma',
-  'rg_ratio', 'gb_ratio', 'br_ratio'
+  'r', 'g', 'b', 'brightness', 'r_chroma', 'g_chroma', 'b_chroma',
+  'rg_ratio', 'gb_ratio', 'br_ratio', 'hue', 'saturation', 'value'
 ]
 
 def add_features(d):
     d = d.copy()
-    for c in ['R','G','B']:
+    for c in ['r','g','b']:
         d[c] = d[c].astype(float)
-    s = d[['R','G','B']].sum(axis=1) + EPS
+    s = d[['r','g','b']].sum(axis=1) + EPS
     d['brightness'] = s / 3.0
-    d['r_chroma'] = d['R'] / s
-    d['g_chroma'] = d['G'] / s
-    d['b_chroma'] = d['B'] / s
-    d['rg_ratio'] = d['R'] / (d['G'] + EPS)
-    d['gb_ratio'] = d['G'] / (d['B'] + EPS)
-    d['br_ratio'] = d['B'] / (d['R'] + EPS)
+    d['r_chroma'] = d['r'] / s
+    d['g_chroma'] = d['g'] / s
+    d['b_chroma'] = d['b'] / s
+    d['rg_ratio'] = d['r'] / (d['g'] + EPS)
+    d['gb_ratio'] = d['g'] / (d['b'] + EPS)
+    d['br_ratio'] = d['b'] / (d['r'] + EPS)
+
+    hsv_list = d[['r','g','b']].apply(
+        lambda row: colorsys.rgb_to_hsv(row['r']/255, row['g']/255, row['b']/255), axis=1
+    )
+    d['hue'] = [h for h,s,v in hsv_list]
+    d['saturation'] = [s for h,s,v in hsv_list]
+    d['value'] = [v for h,s,v in hsv_list]
     return d
 
 try:
@@ -34,7 +41,7 @@ try:
     g_val = sys.argv[2]
     b_val = sys.argv[3]
 
-    temp = pd.DataFrame([{'R': r_val, 'G': g_val, 'B': b_val}])
+    temp = pd.DataFrame([{'r': r_val, 'g': g_val, 'b': b_val}])
     temp = add_features(temp)
     x_input = temp[feature_cols]
 

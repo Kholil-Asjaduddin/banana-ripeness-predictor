@@ -14,10 +14,12 @@ app.use(express.json());
 const sensorRoutes = require('./routes/sensor')(db);
 const trainingRoutes = require('./routes/training')(db);
 const predictRoutes = require('./routes/predict')();
+const testingRoutes = require('./routes/testing')();
 
 app.use('/api/sensor', sensorRoutes);
 app.use('/api/training', trainingRoutes);
 app.use('/api/predict', predictRoutes);
+app.use('/api/testing', testingRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
