@@ -1,5 +1,6 @@
 const mqtt = require('mqtt');
 const { predictNextPhase } = require('../services/prediction/knn');
+const { predictKategori } = require('../services/classification/catboost');
 
 const client = mqtt.connect(process.env.MQTT_BROKER_URL || 'mqtt://test.mosquitto.org:1883');
 
@@ -25,7 +26,7 @@ module.exports = () => {
     });
 
     // Handler untuk data sensor
-    const handler = (topic, message) => {
+    const handler = async (topic, message) => {
       if (topic !== dataTopic) return;
 
       let sensorData;
@@ -37,9 +38,29 @@ module.exports = () => {
         return;
       }
 
+      const { r, g, b, tvoc } = sensorData;
+      if (r == null || g == null || b == null || tvoc == null) {
+        console.error('Sensor data missing r, g, b, or tvoc fields.');
+        return;
+      }
+
       try {
-        const ripeness = "raw"; // TODO: ganti dengan klasifikasi nyata
-        const nextPhase = predictNextPhase(sensorData.tvoc, ripeness);
+        // Panggil Catboost
+        const ripenessIND = await predictKategori(r, g, b);
+        const mapping = {
+          'mentah': 'raw',
+          'matang': 'ripe',
+          'busuk': 'spoiled'
+        };
+        const ripeness = mapping[ripenessIND];
+        
+        if (!ripeness) {
+          console.error(`Kategori tidak dikenal dari CatBoost: ${ripenessIND}`);
+          return; 
+        }
+
+        // Panggil KNN
+        const nextPhase = predictNextPhase(tvoc, ripeness);
 
         const predictionResult = {
           idDevice,
