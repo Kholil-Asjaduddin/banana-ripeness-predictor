@@ -2,7 +2,7 @@ const mqtt = require('mqtt');
 const { predictNextPhase } = require('../services/prediction/knn');
 const { predictKategori } = require('../services/classification/catboost');
 
-const client = mqtt.connect(process.env.MQTT_BROKER_URL);
+const client = mqtt.connect(process.env.MQTT_BROKER_URL || 'mqtt://test.mosquitto.org:1883');
 
 // Simpan handler per device agar bisa dilepas saat stop
 const handlers = {};
