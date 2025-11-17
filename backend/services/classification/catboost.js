@@ -17,7 +17,7 @@ async function predictKategori(r, g, b) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        r: parseFloat(r), // Pastikan datanya angka
+        r: parseFloat(r),
         g: parseFloat(g),
         b: parseFloat(b),
       }),
