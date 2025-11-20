@@ -31,10 +31,15 @@ function predictNextPhase(tvoc, co2, r, g, b, ripeness) {
 
   const x_input = [tvoc, co2, r, g, b, ...ripenessMap[ripeness]];
 
-  const distances = X_train.map((x, i) => ({
-    index: i,
-    dist: distance(x, x_input)
-  }));
+  // Euclidean distance
+  const distance = (a, b) => {
+    return Math.sqrt(a.reduce((sum, val, i) => {
+      const va = (typeof val === 'boolean') ? (val ? 1 : 0) : val;
+      const vb = (typeof b[i] === 'boolean') ? (b[i] ? 1 : 0) : b[i];
+      return sum + Math.pow(va - vb, 2);
+    }, 0));
+  };
+
 
   const nearest = distances.sort((a, b) => a.dist - b.dist).slice(0, k);
   const prediction = nearest.reduce((sum, { index }) => sum + y_train[index], 0) / k;
