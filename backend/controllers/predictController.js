@@ -38,14 +38,14 @@ module.exports = () => {
         return;
       }
 
-      const { r, g, b, tvoc } = sensorData;
-      if (r == null || g == null || b == null || tvoc == null) {
-        console.error('Sensor data missing r, g, b, or tvoc fields.');
+      const { r, g, b, tvoc, co2 } = sensorData;
+      if (r == null || g == null || b == null || tvoc == null || co2 == null) {
+        console.error('Sensor data missing r, g, b, tvoc, or co2 fields.');
         return;
       }
 
       try {
-        // Panggil Catboost
+        // Panggil Catboost untuk klasifikasi kematangan
         const ripenessIND = await predictKategori(r, g, b);
         const mapping = {
           'mentah': 'raw',
@@ -59,8 +59,8 @@ module.exports = () => {
           return; 
         }
 
-        // Panggil KNN
-        const nextPhase = predictNextPhase(tvoc, ripeness);
+        // Panggil KNN dengan fitur lengkap
+        const nextPhase = predictNextPhase(tvoc, co2, r, g, b, ripeness);
 
         const predictionResult = {
           idDevice,

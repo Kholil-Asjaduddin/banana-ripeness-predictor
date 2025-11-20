@@ -18,35 +18,25 @@ const { k, X_train, y_train } = model;
  * @param {string} ripeness - one of 'raw', 'ripe', 'spoiled'
  * @returns {number} predicted nextPhase
  */
-function predictNextPhase(tvoc, ripeness) {
-  // Early exit: no prediction needed for spoiled fruit
-  if (ripeness === 'spoiled') {
-    return null; // or you can return 0, or throw an error, depending on your needs
-  }
-
-  // One-hot encode ripeness
+function predictNextPhase(tvoc, co2, r, g, b, ripeness) {
   const ripenessMap = {
-    raw: [true, false, false],
-    ripe: [false, true, false],
-    spoiled: [false, false, true]
+    raw: [1, 0, 0],
+    ripe: [0, 1, 0],
+    spoiled: [0, 0, 1]
   };
 
   if (!ripenessMap[ripeness]) {
     throw new Error(`Invalid ripeness value: ${ripeness}`);
   }
 
-  const x_input = [tvoc, ...ripenessMap[ripeness].map(v => v ? 1 : 0)];
+  const x_input = [tvoc, co2, r, g, b, ...ripenessMap[ripeness]];
 
-  // Calculate the distance to all X_train
   const distances = X_train.map((x, i) => ({
     index: i,
     dist: distance(x, x_input)
   }));
 
-  // Take k nearest neighbors
   const nearest = distances.sort((a, b) => a.dist - b.dist).slice(0, k);
-
-  // Calculate the average y of the neighbors
   const prediction = nearest.reduce((sum, { index }) => sum + y_train[index], 0) / k;
 
   return prediction;
